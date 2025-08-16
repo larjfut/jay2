@@ -5,15 +5,13 @@ import { generateCoverTocDoc } from '@/lib/docgen'
 
 export default function CoverPage(){
   const store = usePacket()
-  const [meta, setMeta] = useState(store.coverToc || {items:[]})
-  const [items, setItems] = useState<CoverTOCItem[]>(store.coverToc?.items || [])
+  const [meta, setMeta] = useState(store.coverToc)
+  const [items, setItems] = useState<CoverTOCItem[]>(store.coverToc.items)
 
   useEffect(()=>{
     const loaded = loadFromLocal()
     if (loaded.coverToc) {
-      // @ts-ignore
-      setMeta(loaded.coverToc)
-      // @ts-ignore
+      setMeta(prevMeta => ({...prevMeta, ...loaded.coverToc}))
       setItems(loaded.coverToc.items || [])
     }
   },[])

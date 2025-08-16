@@ -14,7 +14,7 @@ import { useDisplayName } from '@/lib/store'
 import { downloadAllZip } from '@/lib/zip'
 import { Archive} from 'lucide-react'
 
-import { CalendarRange, ClipboardList, FileDown, FileSpreadsheet, FileText, FlaskConical, FolderOpenDot, FolderOutput, NotebookPen, Pill, TestTubes, Timeline as TimelineIcon, Users} from 'lucide-react'
+import { CalendarRange, ClipboardList, FileDown, FileSpreadsheet, FileText, FlaskConical, FolderOpenDot, FolderOutput, NotebookPen, Pill, TestTubes, History as TimelineIcon, Users} from 'lucide-react'
 
 export default function Wizard(){
   const displayName = useDisplayName()
@@ -45,8 +45,8 @@ export default function Wizard(){
     'Section 7 — Medications',
     'Section 8 — Family History',
     'Section 4 — Symptom Timeline',
-    '{displayName}’s Medical Records Index',
-    '{displayName}’s Test Results Index',
+    `${displayName}’s Medical Records Index`,
+    `${displayName}’s Test Results Index`,
     'Exports — Build Docs'
   ]
 
@@ -62,7 +62,7 @@ export default function Wizard(){
       </div>
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-lg font-semibold">Wizard</h2>
-        <span className="text-xs text-gray-600">Step {step} of 7 • {titles[step-1]}</span>
+        <span className="text-xs text-gray-600">Step {step} of 7 • {titles[step-1].replace('{displayName}', displayName)}</span>
       </div>
 
       {step===1 && <TwoCol left={<NarrativeForm />} right={<NarrativeHelp />} />}
@@ -74,38 +74,38 @@ export default function Wizard(){
       {step===7 && <TwoCol left={<ExportPanel />} right={<ExportHelp />} />}
 
       
-      {step===1 && <IntroDialog id="step1" title="{displayName}’s Narrative" bullets={[
-        'Use plain words to tell {displayName}’s story',
+      {step===1 && <IntroDialog id="step1" title={`${displayName}’s Narrative`} bullets={[
+        `Use plain words to tell ${displayName}’s story`,
         'Short is fine — we’ll keep it to one page',
         'You can pause and return later'
       ]} />}
-      {step===2 && <IntroDialog id="step2" title="{displayName}’s Medications" bullets={[
+      {step===2 && <IntroDialog id="step2" title={`${displayName}’s Medications`} bullets={[
         'List what Jay takes now and what was tried',
         'If dates are fuzzy, month/year is fine',
         'Side effects help Baylor understand the journey'
       ]} />}
-      {step===3 && <IntroDialog id="step3" title="{displayName}’s Family History" bullets={[
+      {step===3 && <IntroDialog id="step3" title={`${displayName}’s Family History`} bullets={[
         'Start with close family and add more if helpful',
         'Unknowns are okay to note',
         'Patterns can support clinical decisions'
       ]} />}
-      {step===4 && <IntroDialog id="step4" title="{displayName}’s Symptom Timeline" bullets={[
+      {step===4 && <IntroDialog id="step4" title={`${displayName}’s Symptom Timeline`} bullets={[
         'Use month/year when you can',
         'Add big moments: onset, changes, ER visits',
         'We’ll export this as a table later'
       ]} />}
-      {step===5 && <IntroDialog id="step5" title="{displayName}’s Records Index" bullets={[
+      {step===5 && <IntroDialog id="step5" title={`${displayName}’s Records Index`} bullets={[
         'List combined PDFs by category',
         'Match filenames to the index',
         'Keep copies of originals'
       ]} />}
-      {step===6 && <IntroDialog id="step6" title="{displayName}’s Test Results Index" bullets={[
+      {step===6 && <IntroDialog id="step6" title={`${displayName}’s Test Results Index`} bullets={[
         'Include labs, imaging, genetics — reports only',
         'Normal results matter too',
         'Note if images (DICOM) are available'
       ]} />}
       {step===7 && <IntroDialog id="step7" title="Exports" bullets={[
-        'Download section files for {displayName}’s packet',
+        `Download section files for ${displayName}’s packet`,
         'Review for accuracy and names',
         'You can always come back to edit'
       ]} />}
@@ -120,8 +120,9 @@ export default function Wizard(){
 }
 
 function NarrativeHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Narrative — Instructions">
+    <InfoSidebar title={`${displayName}’s Narrative — Instructions`}>
       <p><strong>Length:</strong> 1 page; 400–600 words; plain language.</p>
       <ul>
         <li>{displayName}’s chief concern (1–2 sentences)</li>
@@ -136,8 +137,9 @@ function NarrativeHelp(){
 }
 
 function MedsHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Medications — Instructions">
+    <InfoSidebar title={`${displayName}’s Medications — Instructions`}>
       <p><strong>Length:</strong> 1–3 pages; table format.</p>
       <ul>
         <li>Include prescriptions, OTC, and supplements.</li>
@@ -150,8 +152,9 @@ function MedsHelp(){
 }
 
 function FamilyHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Family History — Instructions">
+    <InfoSidebar title={`${displayName}’s Family History — Instructions`}>
       <p><strong>Length:</strong> 1–2 pages; table preferred.</p>
       <ul>
         <li>Immediate family first, then extended.</li>
@@ -164,8 +167,9 @@ function FamilyHelp(){
 }
 
 function TimelineHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Symptom Timeline — Instructions">
+    <InfoSidebar title={`${displayName}’s Symptom Timeline — Instructions`}>
       <p><strong>Length:</strong> 1–2 pages; bullets or table.</p>
       <ul>
         <li>Use MM/YYYY; add severity, duration, and triggers if known.</li>
@@ -178,8 +182,9 @@ function TimelineHelp(){
 }
 
 function RecordsHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Medical Records">
+    <InfoSidebar title={`${displayName}’s Medical Records`}>
       <p><strong>Include:</strong> PCP notes, specialist notes, hospital/ER summaries, imaging reports, labs & genetics, functional tests, therapy notes.</p>
       <p><strong>Format:</strong> PDFs; grouped by category; chronological; clear filenames matching index.</p>
       <ul>
@@ -191,8 +196,9 @@ function RecordsHelp(){
 }
 
 function TestsHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="{displayName}’s Test Results">
+    <InfoSidebar title={`${displayName}’s Test Results`}>
       <p><strong>Include:</strong> Labs, genetics, imaging, pathology, functional/specialty, and other relevant reports.</p>
       <p><strong>Format:</strong> PDFs; grouped by category; chronological; keep original versions.</p>
       <ul>
@@ -204,8 +210,9 @@ function TestsHelp(){
 }
 
 function ExportHelp(){
+  const displayName = useDisplayName()
   return (
-    <InfoSidebar title="Export {displayName}’s Packet">
+    <InfoSidebar title={`Export ${displayName}’s Packet`}>
       <ul>
         <li>Export DOCX for each section and review for accuracy.</li>
         <li>Ensure filenames match your indices.</li>
@@ -220,6 +227,7 @@ function NarrativeForm(){
   const store = usePacket()
   const { narrative, set } = store
   const [data, setData] = useState(narrative)
+  const displayName = useDisplayName()
 
   const wordCount = useMemo(()=>{
     const text = [data.chiefConcern, data.workupSummary, data.impact, data.familySnapshot, data.goals].join(' ')
@@ -243,7 +251,7 @@ function NarrativeForm(){
       <Field label="Family History Snapshot" value={data.familySnapshot} onChange={v=>setData({...data, familySnapshot: v})}/>
       <Field label="Goals for Evaluation" value={data.goals} onChange={v=>setData({...data, goals: v})}/>
       <div className="text-xs text-gray-500">The detailed timeline is collected in Step 4 and included in your narrative export.</div>
-      <ExpandableHelp title="({displayName}’s Family History)">
+      <ExpandableHelp title={`(${displayName}’s Family History)`}>
         <p><strong>Example rows</strong></p>
         <ul>
           <li>Mother — hypothyroidism; dx age ~52; stable on levothyroxine</li>
@@ -287,6 +295,7 @@ function MedsForm(){
   const [curr, setCurr] = useState(store.medsCurrent||[])
   const [past, setPast] = useState(store.medsPast||[])
   const ready = curr.length>0 || past.length>0
+  const displayName = useDisplayName()
   useEffect(()=>{ store.set('medsCurrent', curr); store.set('medsPast', past); saveToLocal({} as any) }, [curr,past])
   return (
     <div className="space-y-6">
@@ -303,7 +312,7 @@ function MedsForm(){
       <div className="flex gap-2">
         <button className="btn" onClick={()=>setPast([...past,{name:'Metoprolol', dose:'25 mg daily', start:'01/2022', stop:'03/2022', purpose:'Tremor', response:'Worsened fatigue', sidefx:'Stopped due to side effects'}])}>Insert example row</button>
       </div>
-      <ExpandableHelp title="({displayName}’s Family History)">
+      <ExpandableHelp title={`(${displayName}’s Family History)`}>
         <p><strong>Example rows</strong></p>
         <ul>
           <li>Mother — hypothyroidism; dx age ~52; stable on levothyroxine</li>
@@ -324,6 +333,7 @@ function FamilyForm(){
   const store = usePacket()
   const [rows, setRows] = useState(store.family||[])
   const ready = rows.length>0 && rows.every(r=>r.relation && r.conditions)
+  const displayName = useDisplayName()
   useEffect(()=>{ store.set('family', rows); saveToLocal({} as any) }, [rows])
   return (
     <div>
@@ -359,7 +369,7 @@ function FamilyForm(){
           </tr>
         </tbody>
       </table>
-      <ExpandableHelp title="({displayName}’s Family History)">
+      <ExpandableHelp title={`(${displayName}’s Family History)`}>
         <p><strong>Example rows</strong></p>
         <ul>
           <li>Mother — hypothyroidism; dx age ~52; stable on levothyroxine</li>
@@ -505,18 +515,19 @@ function ExportPanel(){
   )
 }
 
-function Field({label, value, onChange}:{label:string; value:string; onChange:(v:string)=>void}){
+function Field({label, value, onChange, children}:{label:string; value:string; onChange:(v:string)=>void, children?: React.ReactNode}){
   return (
     <div>
       <label className="label">{label}</label>
       
-      <details className="mt-2">
-        <summary className="cursor-pointer text-sm text-[color:var(--muted)] hover:underline">Need examples?</summary>
-        <div className="mt-1 text-sm space-y-1">
-          <p>Example for {displayName}’s Narrative: “Jay has had ongoing joint pain since 2018, starting in the knees and now affecting shoulders and wrists. Fatigue has worsened over time and limits daily activities.”</p>
-          <p>Example for {displayName}’s Family History: “Mother — hypothyroidism, diagnosed age 40. Maternal grandmother — arthritis, onset in 50s. Brother — no known conditions.”</p>
-        </div>
-      </details>
+      {children && (
+        <details className="mt-2">
+          <summary className="cursor-pointer text-sm text-[color:var(--muted)] hover:underline">Need examples?</summary>
+          <div className="mt-1 text-sm space-y-1">
+            {children}
+          </div>
+        </details>
+      )}
     
       <textarea className="input" rows={4} value={value} onChange={e=>onChange(e.target.value)} />
     </div>

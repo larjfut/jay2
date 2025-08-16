@@ -1,13 +1,13 @@
 
 'use client'
 import { PacketState } from '@/lib/store'
+import { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } from 'docx'
 
 function titlePara(text:string){ return new Paragraph({ text, heading: HeadingLevel.TITLE }) }
 function h2(text:string){ return new Paragraph({ text, heading: HeadingLevel.HEADING_2 }) }
 function p(text:string){ return new Paragraph({ children: [new TextRun(text)] }) }
 
 export async function buildCoverTocDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const name = state.patient?.name || 'Patient'
   const doc = new Document({ sections: [{ children: [
     titlePara('Baylor UDC Packet'),
@@ -29,7 +29,6 @@ export async function buildCoverTocDoc(state: PacketState){
 }
 
 export async function buildNarrativeDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const n = state.narrative
   const doc = new Document({ sections: [{ children: [
     titlePara('Section 2 — Narrative'),
@@ -43,7 +42,6 @@ export async function buildNarrativeDoc(state: PacketState){
 }
 
 export async function buildTimelineDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const rows = state.narrative.timeline || []
   const table = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -63,7 +61,6 @@ export async function buildTimelineDoc(state: PacketState){
 }
 
 export async function buildMedsDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const head = new TableRow({ children: ['Name','Dosage & Freq','Start','Stop','Purpose','Response','Side effects'].map(h=> new TableCell({ children:[p(h)] })) })
   const mkRows = (rows:any[]) => rows.map(r=> new TableRow({ children: [
     new TableCell({ children:[p(r.name||'')]}),
@@ -83,7 +80,6 @@ export async function buildMedsDoc(state: PacketState){
 }
 
 export async function buildFamilyDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const head = new TableRow({ children: ['Relation','Age/Age at death','Conditions','Age at dx','Notes'].map(h=> new TableCell({ children:[p(h)] })) })
   const rows = (state.family||[]).map(r=> new TableRow({ children: [
     new TableCell({ children:[p(r.relation||'')]}),
@@ -97,7 +93,6 @@ export async function buildFamilyDoc(state: PacketState){
 }
 
 export async function buildRecordsCoverDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const rows = state.recordsIndex||[]
   const head = new TableRow({ children: ['#','Filename','Category','Date range'].map(h=> new TableCell({ children:[p(h)] })) })
   const body = rows.map((r, i)=> new TableRow({ children: [
@@ -111,7 +106,6 @@ export async function buildRecordsCoverDoc(state: PacketState){
 }
 
 export async function buildTestsCoverDoc(state: PacketState){
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = await import('docx');
   const rows = state.testsIndex||[]
   const head = new TableRow({ children: ['#','Filename','Category','Date range'].map(h=> new TableCell({ children:[p(h)] })) })
   const body = rows.map((r, i)=> new TableRow({ children: [
@@ -125,13 +119,13 @@ export async function buildTestsCoverDoc(state: PacketState){
 }
 
 // Legacy export helpers kept for existing buttons (they trigger downloads directly)
-export async function generateCoverTocDoc(state: PacketState){ const b = await buildCoverTocDoc(state).createBlob(); dl(b, '1_Cover_TOC.docx') }
-export async function generateNarrativeDoc(state: PacketState){ const b = await buildNarrativeDoc(state).createBlob(); dl(b, '2_Narrative.docx') }
-export async function generateTimelineDoc(state: PacketState){ const b = await buildTimelineDoc(state).createBlob(); dl(b, '4_Timeline.docx') }
-export async function generateMedsDoc(state: PacketState){ const b = await buildMedsDoc(state).createBlob(); dl(b, '7_Medications.docx') }
-export async function generateFamilyDoc(state: PacketState){ const b = await buildFamilyDoc(state).createBlob(); dl(b, '8_Family_History.docx') }
-export async function generateRecordsCoverDoc(state: PacketState){ const b = await buildRecordsCoverDoc(state).createBlob(); dl(b, '5_Records_Index_Cover.docx') }
-export async function generateTestsCoverDoc(state: PacketState){ const b = await buildTestsCoverDoc(state).createBlob(); dl(b, '6_Tests_Index_Cover.docx') }
+export async function generateCoverTocDoc(state: PacketState){ const doc = await buildCoverTocDoc(state); const b = await doc.createBlob(); dl(b, '1_Cover_TOC.docx') }
+export async function generateNarrativeDoc(state: PacketState){ const doc = await buildNarrativeDoc(state); const b = await doc.createBlob(); dl(b, '2_Narrative.docx') }
+export async function generateTimelineDoc(state: PacketState){ const doc = await buildTimelineDoc(state); const b = await doc.createBlob(); dl(b, '4_Timeline.docx') }
+export async function generateMedsDoc(state: PacketState){ const doc = await buildMedsDoc(state); const b = await doc.createBlob(); dl(b, '7_Medications.docx') }
+export async function generateFamilyDoc(state: PacketState){ const doc = await buildFamilyDoc(state); const b = await doc.createBlob(); dl(b, '8_Family_History.docx') }
+export async function generateRecordsCoverDoc(state: PacketState){ const doc = await buildRecordsCoverDoc(state); const b = await doc.createBlob(); dl(b, '5_Records_Index_Cover.docx') }
+export async function generateTestsCoverDoc(state: PacketState){ const doc = await buildTestsCoverDoc(state); const b = await doc.createBlob(); dl(b, '6_Tests_Index_Cover.docx') }
 
 function dl(blob: Blob, name: string){
   const a = document.createElement('a')

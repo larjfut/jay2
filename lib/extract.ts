@@ -1,11 +1,7 @@
 'use client'
 
 export async function extractTextFromPDF(file: File): Promise<string> {
-  const pdfjs = await import('pdfjs-dist/build/pdf')
-  // @ts-ignore
-  const workerSrc = await import('pdfjs-dist/build/pdf.worker.min.mjs')
-  // @ts-ignore
-  pdfjs.GlobalWorkerOptions.workerSrc = (workerSrc as any).default || workerSrc
+  const pdfjs = await import('pdfjs-dist/webpack.mjs')
   const arrayBuf = await file.arrayBuffer()
   const loadingTask = pdfjs.getDocument({ data: arrayBuf })
   const pdf = await loadingTask.promise
